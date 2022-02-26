@@ -7,12 +7,12 @@ import { faCoffee, faMinus } from '@fortawesome/free-solid-svg-icons'
 function Inventory({ username }) {
 
     const getData = async () => {
-        const response = await axios.get(`http://localhost:5000/api/inventory/${username}`)
+        const response = await axios.get(`http://localhost:8080/api/inventory/${username}`)
         return response.data
     }
 
     const removeItem = async (item) => {
-        await axios.post(`http://localhost:5000/api/inventory/${username}`, { username, item }).then((res) => {
+        await axios.post(`http://localhost:8080/api/inventory/${username}`, { username, item }).then((res) => {
             console.log('Removing item...')
             // force re-render
             toggleUpdate(!update)

@@ -12,7 +12,7 @@ function Registration() {
 
     const signIn = async () => {
         console.log('signing in')
-        const response = await axios.post('http://localhost:5000/api/register', {username, email, first, last,  password})
+        const response = await axios.post('http://localhost:8080/api/register', {username, email, first, last,  password})
         console.log(response.data)
     }
 

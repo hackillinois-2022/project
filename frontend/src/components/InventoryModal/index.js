@@ -7,12 +7,12 @@ function InventoryModal({ username, setModalShown }) {
 
 
     const getProduceList =  async () => {
-        const response = await axios.get(`http://localhost:5000/api/list_inventory`)
+        const response = await axios.get(`http://localhost:8080/api/list_inventory`)
         return response.data
     }
 
     const addProduce = async () => {
-        await axios.post(`http://localhost:5000/api/inventory/${username}`, { produceSelected, storeCost }).then((res) => {
+        await axios.post(`http://localhost:8080/api/inventory/${username}`, { produceSelected, storeCost }).then((res) => {
             console.log('Adding item...')
             // force re-render
             setModalShown(false)
