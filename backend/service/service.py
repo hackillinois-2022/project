@@ -1,4 +1,5 @@
 from backend.entity.userdetails import UserDetails
+from backend.entity.inventory import Produce
 from backend.dao.db_module import DatabaseModule
 
 
@@ -36,47 +37,27 @@ class Service:
             print("Error Inserting user record")
             return {"message": "Error Inserting user record", "successs": False}, 200
 
-    #
-    # def add_inventory(self, **data):
-    #     """
-    #     Adds user records into databases
-    #     throws error if user id provided is invalid
-    #     :param dict data: dict of all inventory object fields and values
-    #     :return dict response, int status_code: returns the respective response and status code based on input provided
-    #     """
-    #     if not self.validate(data.get("id", "")):
-    #         return {"message": "Invalid Inventory ID"}, 400
-    #     inventory_object = Inventory(**data)
-    #     try:
-    #         database_response = self.db_module.insert(**inventory_object.__dict__)
-    #         if database_response.rowcount > 0:
-    #             return {"message": "Successfully inserted inventory for id %s" % database_response.inserted_primary_key[0]}, 200
-    #         return {"message": "Record for id %s already exists" % data.get("id")}, 200
-    #     except Exception as e:
-    #         print("Error Inserting inventory record")
-    #         return {"message": "Error Inserting inventory record"}, 500
-    #
-    # def get_all_inventory(self):
-    #     """
-    #     Retrieve all Inventory records present
-    #     :return dict response, int status_code: returns the respective response and status code based on input provided
-    #     """
-    #     try:
-    #         database_response = self.db_module.get_all()
-    #         if database_response.rowcount == 0:
-    #             return {"message": "No records found"}, 404
-    #         rows = database_response.fetchall()
-    #         output = []
-    #         for row in rows:
-    #             record = dict(row)
-    #             record.pop("is_deleted")
-    #             record.pop("deletion_comments")
-    #             output.append(record)
-    #         return output, 200
-    #     except Exception as e:
-    #         print("Error retrieving records")
-    #         return {"message": "Error retrieving records"}, 500
-    #
+
+    def add_produce(self, **data):
+        """
+        Adds user records into databases
+        throws error if user id provided is invalid
+        :param dict data: dict of all inventory object fields and values
+        :return dict response, int status_code: returns the respective response and status code based on input provided
+        """
+        if not self.validate(data.get("username", "")) or not self.validate(data.get("produceName", "")) or not self.validate(data.get("location", "")) :
+            return {"message": "Invalid username or produceName or location", "successs": False}, 200
+
+        produce_data = Produce(**data)
+        try:
+            database_response = self.db_module.insert_produce_data(**produce_data.__dict__)
+            if database_response.rowcount > 0:
+                return {"message": "Successfully inserted userdata for username %s" % database_response.inserted_primary_key[0], "successs": True}, 200
+            return {"message": "Record for username %s and produce already exists" % data.get("username"), "successs": False}, 200
+        except Exception as e:
+            print("Error Inserting user record {}".format(e))
+            return {"message": "Error Inserting user record", "successs": False}, 200
+
     def get_user_data(self, **data):
         """
         Retrieve User data for specified username
@@ -101,23 +82,46 @@ class Service:
             print("Error retrieving user data")
             return {"message": "Error retrieving user data", "success": False}, 200
 
-    # def delete_inventory(self, **data):
-    #     """
-    #     Delete a record from inventory, where a particular field is_deleted is set to 1 (soft delete)
-    #     :param dict data: dict of all inventory object fields and values
-    #     :return dict response, int status_code: returns the respective response and status code based on input provided
-    #     """
-    #     try:
-    #         if not self.validate(data.get("id", "")):
-    #             return {"message": "Invalid Inventory ID"}, 400
-    #         database_response = self.db_module.delete(**data)
-    #         if database_response.rowcount > 0:
-    #             return {"message": "Successfully deleted inventory for id %s" % data.get("id")}, 200
-    #         return {"message": "No records found for id %s" % (data.get("id"))}, 404
-    #     except Exception as e:
-    #         print("Error deleting record")
-    #         return {"message": "Error deleting record"}, 500
-    #
+    def get_produce(self, data):
+        """
+        Retrieve User data for specified username
+        :param dict data: dict of all inventory object fields and values
+        :return dict response, int status_code: returns the respective response and status code based on input provided
+        """
+        try:
+            if not self.validate(data):
+                return {"message": "Invalid username",  "success": False}, 200
+            print(data)
+            database_response = self.db_module.get_produce_data(data)
+            if database_response.rowcount == 0:
+                return {"message": "No records found for username %s" % data.get("username"),  "success": False}, 200
+            rows = database_response.fetchall()
+            output = []
+            for row in rows:
+                record = dict(row)
+                output.append(record)
+            return {"data": output, "success": True}, 200
+        except Exception as e:
+            print("Error retrieving inventory data {}".format(e))
+            return {"message": "Error retrieving inventory data", "success": False}, 200
+
+    def delete_produce(self, **data):
+        """
+        Delete a record from inventory, where a particular field is_deleted is set to 1 (soft delete)
+        :param dict data: dict of all inventory object fields and values
+        :return dict response, int status_code: returns the respective response and status code based on input provided
+        """
+        try:
+            if not self.validate(data.get("username", "")) and not self.validate(data.get("produceName", "")):
+                return {"message": "Invalid username or Producename"}, 400
+            database_response = self.db_module.delete(**data)
+            if database_response.rowcount > 0:
+                return {"message": "Successfully deleted inventory for username %s" % data.get("username")}, 200
+            return {"message": "No records found for id %s" % (data.get("username"))}, 404
+        except Exception as e:
+            print("Error deleting record")
+            return {"message": "Error deleting record"}, 500
+
     # def reverse_delete(self, **data):
     #     """
     #     Restore a record from inventory, where a particular field is_deleted is set to 0 (soft delete restore)

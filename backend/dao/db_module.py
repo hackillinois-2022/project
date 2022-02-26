@@ -50,6 +50,15 @@ class DatabaseModule:
         query = self.user_table.insert().values(data).prefix_with("IGNORE")
         return self.__execute(query)
 
+    def insert_produce_data(self, **data):
+        """
+        To build insert query for inventory
+        :param dict data: dictionary of inventory object
+        :return: query response
+        """
+        query = self.produce.insert().values(data).prefix_with("IGNORE")
+        return self.__execute(query)
+
     def get_user_details(self, **data):
         """
         To build get query for a particular inventory
@@ -57,6 +66,15 @@ class DatabaseModule:
         :return: query response
         """
         query = self.user_table.select().where(and_(self.user_table.columns.username == data.get("username")))
+        return self.__execute(query)
+
+    def get_produce_data(self, data):
+        """
+        To build get query for a particular inventory
+        :param dict data: dictionary of inventory object
+        :return: query response
+        """
+        query = self.produce.select().where(and_(self.produce.columns.username == data))
         return self.__execute(query)
     #
     # def get_all(self):
@@ -78,15 +96,15 @@ class DatabaseModule:
     #     query = query.where(and_(self.inventory_table.columns.id == data.get("id"), self.inventory_table.columns.is_deleted == 0))
     #     return self.__execute(query)
     #
-    # def delete(self, **data):
-    #     """
-    #     To build delete query for a particular inventory where is_deleted is set to 1 to mark it delete (soft delete)
-    #     :param dict data: dictionary of inventory object
-    #     :return: query response
-    #     """
-    #     query = self.inventory_table.update().values(is_deleted=1, deletion_comments = data.get("deletion_comments", ""))
-    #     query = query.where(self.inventory_table.columns.id == data.get("id"))
-    #     return self.__execute(query)
+    def delete(self, **data):
+        """
+        To build delete query for a particular inventory where is_deleted is set to 1 to mark it delete (soft delete)
+        :param dict data: dictionary of inventory object
+        :return: query response
+        """
+        query = self.produce.delete().where(and_(self.produce.columns.username == data.get("username")), and_(self.produce.columns.produce_name == data.get("produceName").lower()))
+        print(query)
+        return self.__execute(query)
     #
     # def reverse_delete(self, **data):
     #     """
