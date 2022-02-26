@@ -93,7 +93,7 @@ class Service:
             output = []
             for row in rows:
                 record = dict(row)
-                if record.get("password_val", None) != data.get("password", ""):
+                if record.get("password_val", None) != data.get("password_val", ""):
                     return {"message": "password does not match our records", "success": False}, 200
                 output.append(record)
             return {"data": output, "success": True}, 200
