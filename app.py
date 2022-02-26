@@ -10,7 +10,7 @@ app = Flask(__name__, static_folder='frontend/build/', static_url_path='/')
 CORS(app)
 
 service = Service()
-@app.route('/api/signin', methods=['GET'])
+@app.route('/api/signin', methods=['POST'])
 def sign_in():
         try:
             request_data = request.get_data()
@@ -55,7 +55,7 @@ def register():
         response.data = json.dumps({"message": "Error while parsing data", "success" : False})
         return response
 
-@app.route('/api/inventory', methods=['GET', 'POST'])
+@app.route('/api/inventory', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def inventory_list():
     if request.method == 'POST':
         return {'success': False}
