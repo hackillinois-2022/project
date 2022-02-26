@@ -35,6 +35,11 @@ def inventory(username):
         return {'success': False}
     
     return {'success': True, 'data': [{'name': 'strawberry', 'price': 100}, {'name': 'blueberry', 'price': 50}]}
+
+@app.route('/api/predictions/<username>', methods=['GET'])
+def predictions(username):
+    return {'success': True, 'data': [{'name': 'strawberry', 'prediction': -5.6, 'confidence': 0.76 }, {'name': 'blueberry', 'prediction': 1.2, 'confidence': 0.4 }]}
+    
 # serve react built project
 @app.route('/')
 def serve():

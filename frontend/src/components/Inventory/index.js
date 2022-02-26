@@ -42,9 +42,9 @@ function Inventory({ username }) {
                 <div className="">
                     {item.name}
                 </div>
-                <div onClick={() => removeItem(item.name)} className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 hover:bg-red-700 sm:mx-0 sm:h-10 sm:w-10">
+                <button onClick={() => removeItem(item.name)} className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 hover:bg-red-700 sm:mx-0 sm:h-10 sm:w-10">
                     <FontAwesomeIcon icon={faMinus} /> 
-                </div>
+                </button>
             </li>
         )
     })
