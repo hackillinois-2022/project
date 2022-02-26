@@ -1,16 +1,36 @@
-import time
+
 from flask import Flask, send_from_directory, request
+from flask import Flask, request, Response
+import json
+from backend.config import config as cfg
+
+from backend.service.service import Service
 from flask_cors import CORS
 app = Flask(__name__, static_folder='frontend/build/', static_url_path='/')
 CORS(app)
 
+service = Service()
 @app.route('/api/signin', methods=['GET', 'POST'])
 def sign_in():
-    data = request.json
+        print("I'm here")
+        try:
+            request_data = request.get_data()
+            response = Response()
+            if not request_data:
+                response.data = json.dumps({"message": "No input data to process"})
+                response.status_code = 400
+                return response
 
-    u = data.get('username')
-    p = data.get('password')
-    return {'success' : u == p }
+            request_data = json.loads(request_data)
+            output_data, response.status_code = service.get_user_data(**request_data)
+            response.data = json.dumps(output_data, default=str)
+            return response
+        except Exception as e:
+            print("Error while parsing data")
+            print(e.args)
+            response = Response(status=400)
+            response.data = json.dumps({"message": "Error while parsing data"})
+            return response
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -47,4 +67,4 @@ def serve():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host=cfg.application_host, debug=True, port=cfg.application_port)
