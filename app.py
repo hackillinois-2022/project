@@ -10,15 +10,14 @@ app = Flask(__name__, static_folder='frontend/build/', static_url_path='/')
 CORS(app)
 
 service = Service()
-@app.route('/api/signin', methods=['GET', 'POST'])
+@app.route('/api/signin', methods=['GET'])
 def sign_in():
-        print("I'm here")
         try:
             request_data = request.get_data()
             response = Response()
             if not request_data:
-                response.data = json.dumps({"message": "No input data to process"})
-                response.status_code = 400
+                response.data = json.dumps({"message": "No input data to process", "success" : False})
+                response.status_code = 200
                 return response
 
             request_data = json.loads(request_data)
@@ -28,27 +27,41 @@ def sign_in():
         except Exception as e:
             print("Error while parsing data")
             print(e.args)
-            response = Response(status=400)
-            response.data = json.dumps({"message": "Error while parsing data"})
+            response = Response(status=200)
+            response.data = json.dumps({"message": "Error while parsing data","success" : False})
             return response
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    data = request.json
+    """
+    Using HTTP POST method to insert an inventory record
+    :return : Response_object: Success or failure message
+    """
+    try:
+        request_data = request.get_data()
+        response = Response()
+        if not request_data:
+            response.data = json.dumps({"message": "No input data to process", "success" : False})
+            response.status_code = 200
+            return response
+        request_data = json.loads(request_data)
+        output_data, response.status_code = service.add_user_data(**request_data)
+        response.data = json.dumps(output_data, default=str)
+        return response
+    except Exception as e:
+        print("Error while parsing data")
+        print(e.args)
+        response = Response(status=200)
+        response.data = json.dumps({"message": "Error while parsing data", "success" : False})
+        return response
 
-    u = data.get('username')
-    p = data.get('password')
-    n = data.get('number')
-
-    return {'success': True}
-
-@app.route('/api/list_inventory', methods=['GET', 'POST'])
+@app.route('/api/inventory', methods=['GET', 'POST'])
 def inventory_list():
     if request.method == 'POST':
         return {'success': False}
     return {'success': True, 'data': [{'name': 'strawberry'}, {'name': 'blueberry'}, {'name': 'pineapple'}]}
 
-@app.route('/api/inventory/<username>', methods=['GET', 'POST'])
+@app.route('/api/inventory', methods=['GET', 'POST'])
 def inventory(username):
 
     if request.method == 'POST':
