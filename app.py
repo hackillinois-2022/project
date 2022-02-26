@@ -22,6 +22,12 @@ def register():
 
     return {'success': True}
 
+@app.route('/api/list_inventory', methods=['GET', 'POST'])
+def inventory_list():
+    if request.method == 'POST':
+        return {'success': False}
+    return {'success': True, 'data': [{'name': 'strawberry'}, {'name': 'blueberry'}, {'name': 'pineapple'}]}
+
 @app.route('/api/inventory/<username>', methods=['GET', 'POST'])
 def inventory(username):
 
