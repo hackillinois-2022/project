@@ -33,7 +33,7 @@ function App() {
         )
       }
       <Route path="/" element = {<Welcome username={username} />} />
-      <Route path="/register" element={<Registration />} />
+      <Route path="/register" element={<Registration setUsername={setUsername}/>} />
       <Route path="/signin" element={<SignIn />} />
         {/* <Route
           path="*"
