@@ -24,17 +24,17 @@ class Service:
         :return dict response, int status_code: returns the respective response and status code based on input provided
         """
         if not self.validate(data.get("username", "")) or not self.validate(data.get("password", "")):
-            return {"message": "Invalid username or password"}, 400
+            return {"message": "Invalid username or password", "successs": False}, 200
 
         user_data = UserDetails(**data)
         try:
             database_response = self.db_module.insert_user_data(**user_data.__dict__)
             if database_response.rowcount > 0:
-                return {"message": "Successfully inserted userdata for username %s" % database_response.inserted_primary_key[0]}, 200
-            return {"message": "Record for username %s already exists" % data.get("username")}, 200
+                return {"message": "Successfully inserted userdata for username %s" % database_response.inserted_primary_key[0], "successs": True}, 200
+            return {"message": "Record for username %s already exists" % data.get("username"), "successs": False}, 200
         except Exception as e:
             print("Error Inserting user record")
-            return {"message": "Error Inserting user record"}, 500
+            return {"message": "Error Inserting user record", "successs": False}, 200
 
     #
     # def add_inventory(self, **data):
@@ -85,21 +85,21 @@ class Service:
         """
         try:
             if not self.validate(data.get("username", "")) or not self.validate(data.get("password", "")):
-                return {"message": "Invalid username or password"}, 400
+                return {"message": "Invalid username or password",  "success": False}, 200
             database_response = self.db_module.get_user_details(**data)
             if database_response.rowcount == 0:
-                return {"message": "No records found for username %s" % data.get("username")}, 404
+                return {"message": "No records found for username %s" % data.get("username"),  "success": False}, 200
             rows = database_response.fetchall()
             output = []
             for row in rows:
                 record = dict(row)
                 if record.get("password_val", None) != data.get("password", ""):
-                    return {"message": "password does not match our records"}, 400
+                    return {"message": "password does not match our records", "success": False}, 200
                 output.append(record)
-            return {"message": "User is authenticated"}, 200
+            return {"data": output, "success": True}, 200
         except Exception as e:
             print("Error retrieving user data")
-            return {"message": "Error retrieving user data"}, 500
+            return {"message": "Error retrieving user data", "success": False}, 200
 
     # def delete_inventory(self, **data):
     #     """
