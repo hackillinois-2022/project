@@ -8,7 +8,7 @@ function SignIn() {
 
     const signIn = async () => {
         console.log('signing in')
-        const response = await axios.post('http://localhost:5000/api/signin', {username, password})
+        const response = await axios.post('http://localhost:8080/api/signin', {username, password})
         console.log(response.data)
     }
     return (
