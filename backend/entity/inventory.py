@@ -10,7 +10,7 @@ class Produce:
         self.cost = kwargs.get("cost", None)
         self.quantity = kwargs.get("quantity", None)
         self.location = kwargs.get("location", None)
-        self.produce_name = kwargs.get("produce_name", None)
+        self.produce_name = kwargs.get("produceName", None).lower()
         self.updated = datetime.datetime.now()
 
 
