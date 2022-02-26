@@ -1,0 +1,13 @@
+create table if not exists inventory_table
+(
+	id BIGINT primary key,
+	name VARCHAR(255),
+	type VARCHAR(255),
+	cost INT,
+	quantity INT,
+	location VARCHAR(255),
+	is_deleted TINYINT,
+	created timestamp default CURRENT_TIMESTAMP,
+	updated timestamp default CURRENT_TIMESTAMP on UPDATE CURRENT_TIMESTAMP,
+	delete_comments VARCHAR(256)
+);
