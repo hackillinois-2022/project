@@ -91,11 +91,11 @@ class Service:
         try:
             if not self.validate(data):
                 return {"message": "Invalid username",  "success": False}, 200
-            print(data)
             database_response = self.db_module.get_produce_data(data)
             if database_response.rowcount == 0:
-                return {"message": "No records found for username %s" % data.get("username"),  "success": False}, 200
+                return {"message": "No records found for username %s" % data,  "success": False}, 200
             rows = database_response.fetchall()
+            print(rows)
             output = []
             for row in rows:
                 record = dict(row)
