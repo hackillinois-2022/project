@@ -1,3 +1,4 @@
+from time import time
 from backend.entity.userdetails import UserDetails
 from backend.entity.inventory import Produce
 from backend.dao.db_module import DatabaseModule
@@ -144,7 +145,7 @@ class Service:
                 record = dict(row)
                 number = random.randrange(0, 1)
                 record["location"] = location_list[number]
-                final_list = (record['produce_name'], record["location"], datetime.now())
+                final_list = preprocess(record['produce_name'], record["location"], datetime.now())
                 output[record['produce_name']] = model_build(final_list)
                 output[record['produce_name']]["location"] = record["location"]
             return {"data": output, "success": True}, 200
@@ -161,9 +162,11 @@ class Service:
         :return dict response, int status_code: returns the respective response and status code based on input provided
         """
         try:
+            print(data)
             if not self.validate(data):
                 return {"message": "Invalid username", "success": False}, 200
             database_response = self.db_module.get_produce_data(data)
+            print(database_response)
             if database_response.rowcount == 0:
                 return {"message": "No records found for username %s" % data, "success": False}, 200
             rows = database_response.fetchall()
@@ -173,15 +176,16 @@ class Service:
             now = datetime.now()
             for x in range(3):
                 d = now - timedelta(days=x)
-                time_list.append(d.strftime("%Y-%m-%d"))
-            time_list.append(now.strftime("%Y-%m-%d"))
+                time_list.append(d)
+            time_list.append(now)
             for x in range(3):
                 d = now + timedelta(days=x)
-                time_list.append(d.strftime("%Y-%m-%d"))
+                time_list.append(d)
             for row in rows:
                 record = dict(row)
                 number = random.randrange(0, 1)
                 record["location"] = location_list[number]
+                print(time_list)
                 output[record['produce_name']] = get_past_price(time_list, record['produce_name'], record["location"])
             return {"data": output, "success": True}, 200
         except Exception as e:
