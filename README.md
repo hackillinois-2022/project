@@ -9,12 +9,12 @@ AgroGen uses Google Cloud, mysql, flask and python in the backend. We came up wi
 
 On the frontend, we use React and TailwindCSS in order to style components and save state between pages. Axios is used to interact with the backend APIs in order to perform actions such as registration, login, or adding produce.
 
-```
 ### Backend development
 ```
 python3 -m pip install flask
 python3 app.py
 ```
+
 ### Web development
 ```
 npm install
