@@ -156,9 +156,9 @@ class Service:
     def model_build(self, final_list):
         output = {}
         loaded_high_model = pickle.load(open("finalized_model_high.pkl", 'rb'))
-        output["high_price"] = loaded_high_model.predict(final_list)[0]
+        output["high_price"] = loaded_high_model.predict(final_list)[0] / 40
         loaded_low_model = pickle.load(open("finalized_model_low.pkl", 'rb'))
-        output["low_price"] = loaded_low_model.predict(final_list)[0]
+        output["low_price"] = loaded_low_model.predict(final_list)[0] / 40
         return output
 
     def validate(self, id):
