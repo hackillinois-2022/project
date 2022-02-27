@@ -1,46 +1,55 @@
 import React, { useState , useEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+import { faBasketShopping } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
-function InventoryModal({ username, setModalShown }) {
+function InventoryModal({ username, setModalShown, toggleUpdate, update }) {
 
 
     const getProduceList =  async () => {
         return new Promise((resolve, reject) => {
-            resolve([{'name': 'strawberry'}, {'name': 'blueberry' }])
+            resolve(['SWEET POTATOES', 'CARROTS', 'POTATOES', 'BANANAS', 'CORN-SWEET',
+            'APPLES', 'AVOCADOS', 'BEANS', 'GARLIC', 'WATERMELONS',
+            'PINEAPPLES', 'TOMATOES', 'STRAWBERRIES', 'SQUASH', 'TURNIPS'])
         })
         // const response = await axios.get(`http://localhost:8080/api/list_inventory`)
         // return response.data
     }
 
     const addProduce = async () => {
-        await axios.post(`http://localhost:8080/api/inventory`, { username, produceName: produceSelected, cost: storeCost, location: 'Champaign' }).then((res) => {
+        await axios.post(`http://localhost:8080/api/inventory`, { username, produceName: produceSelected, location: locationSelected }).then((res) => {
             console.log('Adding item...')
             // force re-render
             setModalShown(false)
+            toggleUpdate(!update)
         })
     }
 
     const [produceList, setProduceList] = useState([]);
+    const locationList = [{'display': 'NEW YORK', 'actual': 'NEW YORK'}, {'display': 'CHAMPAIGN', 'actual': 'LOS ANGELES' }]
     const [storeCost, setStoreCost] = useState(0);
     const [produceSelected, setProduceSelected] = useState('')
+    const [locationSelected, setLocationSelected] = useState('NEW YORK')
     useEffect(() => {
         getProduceList().then(res => {
             // setLoading(false)
-            console.log(res.success, res.data)
-            if (res.success) {
-                setProduceList(res.data)
-                setProduceSelected(res.data[0].name)
-            }
+            console.log(res)
+            setProduceList(res)
+            setProduceSelected(res[0])
         })
     }, [])
 
-    const produceListTags = produceList.map((p, i) => {
+    const produceListTags = produceList.map((p) => {
         // if (i == 0) {
         //     return <option selected value={p.name}>{p.name}</option>
         // }
-        return <option key={p.name} value={p.name}>{p.name}</option>
+        return <option key={p} value={p}>{p}</option>
+    })
+    const locationListTags = locationList.map((p) => {
+        // if (i == 0) {
+        //     return <option selected value={p.name}>{p.name}</option>
+        // }
+        return <option key={p.actual} value={p.actual}>{p.display}</option>
     })
 
     return (
@@ -71,21 +80,26 @@ function InventoryModal({ username, setModalShown }) {
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div className="sm:flex sm:items-start">
                             <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <FontAwesomeIcon icon={faCoffee} />
+                                <FontAwesomeIcon icon={faBasketShopping} />
                             </div>
                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                 <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">Add produce</h3>
-                                <div className="mt-2">
-                                    <select value={produceSelected} onChange={(e) => setProduceSelected(e.target.value)} className="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
+                                <div className="mt-2 pb-2">
+                                    <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="produceList">
+                                        Select Produce
+                                    </label>
+                                    <select id="produceList" value={produceSelected} onChange={(e) => setProduceSelected(e.target.value)} className="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
                                         {produceListTags}
                                     </select>
-                                    <div className="mb-4">
-                                        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="store-cost">
-                                            Cost to store per KG
-                                        </label>
-                                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" value={storeCost} onChange={(e) => setStoreCost(e.target.value)} id="store-cost" type="text" placeholder="Username"></input>
-                                    </div>
                                 </div>
+                                    <div className="mb-4">
+                                        <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="locationList">
+                                            Select Location of Produce
+                                        </label>
+                                        <select id="locationList" value={locationSelected} onChange={(e) => setLocationSelected(e.target.value)} className="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
+                                            {locationListTags}
+                                        </select>
+                                    </div>
                             </div>
                         </div>
                     </div>

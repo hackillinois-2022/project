@@ -33,7 +33,6 @@ function MenuBar({ username, setUsername }) {
                 {signedIn &&
                 <>
                 <Link to="/inventory" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">My Inventory</Link>
-                <Link to="/notifications" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">My Notifications</Link>
                 <Link to="/predictions" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">Daily Predictions</Link>
                 </>
                 }
