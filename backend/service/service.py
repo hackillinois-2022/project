@@ -5,7 +5,8 @@ from backend.utility.Preprocessing import preprocess
 import pickle
 import random
 
-
+loaded_low_model = pickle.load(open("finalized_model_low.pkl", 'rb'))
+loaded_high_model = pickle.load(open("finalized_model_high.pkl", 'rb'))
 class Service:
     """
     Service class to serve requests for inventory application
@@ -143,11 +144,10 @@ class Service:
             for row in rows:
                 record = dict(row)
                 number = random.randrange(0, 1)
-                record["location"] = location_list[number]
-                print(record['produce_name'])
-                print(record['location'])
-                final_list = preprocess(record['produce_name'], record["location"])
+                location = location_list[number]
+                final_list = preprocess(record['produce_name'], location)
                 output[record['produce_name']] = self.model_build(final_list)
+                output[record['produce_name']]["location"] = record["location"]
             return {"data": output, "success": True}, 200
         except Exception as e:
             print("Error retrieving inventory data {}".format(e))
@@ -155,10 +155,8 @@ class Service:
 
     def model_build(self, final_list):
         output = {}
-        loaded_high_model = pickle.load(open("finalized_model_high.pkl", 'rb'))
-        output["high_price"] = loaded_high_model.predict(final_list)[0] / 40
-        loaded_low_model = pickle.load(open("finalized_model_low.pkl", 'rb'))
-        output["low_price"] = loaded_low_model.predict(final_list)[0] / 40
+        output["high_price"] = round(loaded_high_model.predict(final_list)[0] / 40, 2)
+        output["low_price"] = round(loaded_low_model.predict(final_list)[0] / 40, 2)
         return output
 
     def validate(self, id):
