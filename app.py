@@ -145,6 +145,25 @@ def predictions():
         response = Response(status=200)
         response.data = json.dumps({"message": "Error while parsing data", "success": False})
         return response
+
+@app.route('/api/predictions/plot', methods=['GET'])
+def predictions_plot():
+    try:
+        request_data = request.args.get("username")
+        response = Response()
+        if not request_data:
+            response.data = json.dumps({"message": "No input data to process", "success": False})
+            response.status_code = 200
+            return response
+        output_data, response.status_code = service.prediction_plot(request_data)
+        response.data = json.dumps(output_data, default=str)
+        return response
+    except Exception as e:
+        print("Error while parsing data")
+        print(e.args)
+        response = Response(status=200)
+        response.data = json.dumps({"message": "Error while parsing data", "success": False})
+        return response
 #
 # serve react built project
 @app.route('/')
