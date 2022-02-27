@@ -1,0 +1,12 @@
+{
+    "data": {
+        "apple": {
+            "location": "new york",
+            "predictions": [
+                {"date": "XXX", "high_price": 123, "low_price": 345},
+                {"date": "XXX", "high_price": 123, "low_price": 345},
+                {"date": "XXX", "high_price": 123, "low_price": 345},
+            ],
+        }
+    }
+}

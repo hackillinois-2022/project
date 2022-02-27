@@ -27,6 +27,7 @@ function App() {
         (
           <>
             <Route path="/inventory" element={<Inventory username={username} />} />
+            <Route path="/predictions" element={<Predictions username={username} />} />
           </>
         )
       }
