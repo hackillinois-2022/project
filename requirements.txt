@@ -6,3 +6,5 @@ mysqlclient
 mysql-connector
 flask-restful
 coverage
+sklearn
+pandas

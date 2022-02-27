@@ -127,18 +127,24 @@ def inventory_delete():
         response.data = json.dumps({"message": "Error while parsing data", "success": False})
         return response
 
-
-# @app.route('/api/inventory', methods=['GET', 'POST'])
-# def inventory(username):
-#
-#     if request.method == 'POST':
-#         return {'success': False}
-#
-#     return {'success': True, 'data': [{'name': 'strawberry', 'price': 100}, {'name': 'blueberry', 'price': 50}]}
-#
-# @app.route('/api/predictions/<username>', methods=['GET'])
-# def predictions(username):
-#     return {'success': True, 'data': [{'name': 'strawberry', 'prediction': -5.6, 'confidence': 0.76 }, {'name': 'blueberry', 'prediction': 1.2, 'confidence': 0.4 }]}
+@app.route('/api/predictions', methods=['GET'])
+def predictions():
+    try:
+        request_data = request.args.get("username")
+        response = Response()
+        if not request_data:
+            response.data = json.dumps({"message": "No input data to process", "success": False})
+            response.status_code = 200
+            return response
+        output_data, response.status_code = service.make_prediction(request_data)
+        response.data = json.dumps(output_data, default=str)
+        return response
+    except Exception as e:
+        print("Error while parsing data")
+        print(e.args)
+        response = Response(status=200)
+        response.data = json.dumps({"message": "Error while parsing data", "success": False})
+        return response
 #
 # serve react built project
 @app.route('/')
