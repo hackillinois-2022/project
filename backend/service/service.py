@@ -1,13 +1,11 @@
 from backend.entity.userdetails import UserDetails
 from backend.entity.inventory import Produce
 from backend.dao.db_module import DatabaseModule
-from backend.utility.Preprocessing import preprocess, get_past_price
-import pickle
+from backend.utility.Preprocessing import preprocess, get_past_price, model_build
 import random
 from datetime import datetime, timedelta
 
-loaded_low_model = pickle.load(open("finalized_model_low.pkl", 'rb'))
-loaded_high_model = pickle.load(open("finalized_model_high.pkl", 'rb'))
+
 class Service:
     """
     Service class to serve requests for inventory application
@@ -147,18 +145,14 @@ class Service:
                 number = random.randrange(0, 1)
                 record["location"] = location_list[number]
                 final_list = (record['produce_name'], record["location"], datetime.now())
-                output[record['produce_name']] = self.model_build(final_list)
+                output[record['produce_name']] = model_build(final_list)
                 output[record['produce_name']]["location"] = record["location"]
             return {"data": output, "success": True}, 200
         except Exception as e:
             print("Error retrieving inventory data {}".format(e))
             return {"message": "Error retrieving inventory data", "success": False}, 200
 
-    def model_build(self, final_list):
-        output = {}
-        output["high_price"] = round(loaded_high_model.predict(final_list)[0] / 40, 2)
-        output["low_price"] = round(loaded_low_model.predict(final_list)[0] / 40, 2)
-        return output
+
 
     def prediction_plot(self, data):
         """

@@ -2,10 +2,20 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 
-from backend.service.service import Service
+import pickle
 
 df = pd.read_csv('final_data.csv',
                  parse_dates=["Date"])
+
+loaded_low_model = pickle.load(open("finalized_model_low.pkl", 'rb'))
+loaded_high_model = pickle.load(open("finalized_model_high.pkl", 'rb'))
+
+
+def model_build(final_list):
+    output = {}
+    output["high_price"] = round(loaded_high_model.predict(final_list)[0] / 40, 2)
+    output["low_price"] = round(loaded_low_model.predict(final_list)[0] / 40, 2)
+    return output
 
 def preprocess(produceName, location, date):
     model_df = df.groupby(['Commodity Name', 'City Name','Date']).agg({'Low Price':'mean',
@@ -31,7 +41,7 @@ def get_past_price(time_range, produceName, location):
     output[produceName]["predictions"] = []
     for date_val in time_range:
         final_list = preprocess(produceName, location, date_val)
-        result = Service.model_build(final_list)
+        result = model_build(final_list)
         result["date"] = date_val
         output[produceName]["predictions"].append(result)
     return output
