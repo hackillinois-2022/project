@@ -1,4 +1,4 @@
-# ***REMOVED***illinois
+# hackillinois
 ### Backend development
 ```
 python3 -m pip install flask
