@@ -25,7 +25,7 @@ ChartJS.register(
 
 function Predictions({ username }) {
     const getPredictions = async () => {
-        const response = await axios.get(`http://localhost:8080/api/predictions`, { params: { username } })
+        const response = await axios.get(`http://localhost:8080/api/predictions/plot`, { params: { username } })
         return response.data
     }
 
@@ -47,13 +47,14 @@ function Predictions({ username }) {
 
 
 
-        let dataObj = null
+        let dataObjHigh = null
+        let dataObjLow = null
         let highData = predictions.map(p => p['high_price'])
         let lowData = predictions.map(p => p['low_price'])
         let labels = predictions.map(p => p['date'])
 
         if (item !== 'loading...') {
-            dataObj = {
+            dataObjHigh = {
                 labels,
                 datasets: [
                     {
@@ -62,6 +63,11 @@ function Predictions({ username }) {
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgba(255, 99, 132, 0.5)',
                     },
+                ],
+            }
+            dataObjLow = {
+                labels,
+                datasets: [
                     {
                     label: 'Low Prediction',
                     data: lowData,
@@ -89,7 +95,10 @@ function Predictions({ username }) {
                     {predictions[3]['low_price']}
                 </td>
                 {item !== 'loading...' ? (<td>
-                    <Line options={options} data={dataObj} />;
+                    <Line options={options} data={dataObjHigh} />
+                </td>) : <td></td>}
+                {item !== 'loading...' ? (<td>
+                    <Line options={options} data={dataObjLow} />
                 </td>) : <td></td>}
             </tr>
         )
@@ -110,16 +119,16 @@ function Predictions({ username }) {
 
     return (
 
-        <div class="container flex flex-col">
+        <div class="container flex flex-col w-full" style={{'min-width': '99%'}}>
 
             <div className="text-2xl mb-2 w-full mt-4 flex justify-center align-center">
                 <div>Prediction Values
                 </div> 
             </div>
-            <div class="flex flex-col w-full min-w-full">
+            <div class="flex flex-col w-full min-w-full bg-slate-100">
                 <div class="overflow-x-auto sm:-mx-6">
                     <div class="py-2 min-w-full sm:px-6 lg:px-8 flex align-center justify-center">
-                        <div class="overflow-hidden shadow-md sm:rounded-lg lg:w-1/2">
+                        <div class="overflow-hidden shadow-md sm:rounded-lg lg:w-full">
                             <table class="min-w-full">
                                 <thead class="bg-slate-100 border-b">
                                     <tr>
@@ -130,13 +139,16 @@ function Predictions({ username }) {
                                             Location
                                         </th>
                                         <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                            Upper Price Prediction
+                                            Todays Max Price Prediction
                                         </th>
                                         <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                            Lower Price Prediction
+                                            Todays Min Price Prediction
                                         </th>
                                         <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                            Chart
+                                            High Chart
+                                        </th>
+                                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                            Low Chart
                                         </th>
                                     </tr>
                                 </thead>
