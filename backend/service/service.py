@@ -144,6 +144,8 @@ class Service:
                 record = dict(row)
                 number = random.randrange(0, 1)
                 record["location"] = location_list[number]
+                print(record['produce_name'])
+                print(record['location'])
                 final_list = preprocess(record['produce_name'], record["location"])
                 output[record['produce_name']] = self.model_build(final_list)
             return {"data": output, "success": True}, 200
@@ -153,9 +155,9 @@ class Service:
 
     def model_build(self, final_list):
         output = {}
-        loaded_high_model = pickle.load(open("finalized_model_high.pkl"), 'rb')
+        loaded_high_model = pickle.load(open("finalized_model_high.pkl", 'rb'))
         output["high_price"] = loaded_high_model.predict(final_list)[0]
-        loaded_low_model = pickle.load(open("finalized_model_low.pkl"), 'rb')
+        loaded_low_model = pickle.load(open("finalized_model_low.pkl", 'rb'))
         output["low_price"] = loaded_low_model.predict(final_list)[0]
         return output
 

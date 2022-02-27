@@ -9,7 +9,7 @@ from datetime import datetime as datetime
 
 
 def preprocess(produceName, location):
-
+    print('calling function')
     df = pd.read_csv('final_data.csv',
                  parse_dates = ["Date"])
     model_df = df.groupby(['Commodity Name', 'City Name','Date']).agg({'Low Price':'mean',
